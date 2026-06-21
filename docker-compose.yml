@@ -1,0 +1,30 @@
+services:
+  web:
+    container_name: servicesapp_web
+    build:
+      context: ./servicesapp            # changed from artiza → servicesapp
+    entrypoint: /app/entrypoint.sh
+    volumes:
+      - ./servicesapp:/app              # project code
+      - ./servicesapp/media:/app/media  # media uploads
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+    restart: always
+
+  db:
+    container_name: servicesapp_db
+    image: postgres:15
+    volumes:
+      - servicesapp_postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgresuser
+      POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_DB: servicesapp_db
+    restart: always
+
+volumes:
+  servicesapp_postgres_data: {}
